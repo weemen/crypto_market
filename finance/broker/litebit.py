@@ -1,4 +1,4 @@
-from broker import Broker
+from finance.broker.broker import Broker
 from lxml import html
 import cfscrape
 
