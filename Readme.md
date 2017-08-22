@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/weemen/crypto_market.svg?branch=master)](https://travis-ci.org/weemen/crypto_market)
+
 CryptoMarket
 ===============
 This is a simple python application which will make it a lot easier to keep an eye on your crypto currencies.
