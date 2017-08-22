@@ -1,6 +1,6 @@
 from broker import Broker
 from lxml import html
-import requests
+import cfscrape
 
 class Litebit(Broker):
 
@@ -29,7 +29,9 @@ class Litebit(Broker):
         return currency
 
     def get_buying_page(self):
-        return requests.get('https://www.litebit.eu/en/buy', allow_redirects=True).content
+        scraper = cfscrape.create_scraper()
+        return scraper.get('https://www.litebit.eu/en/buy', allow_redirects=True).content
 
     def get_selling_page(self):
-        return requests.get('https://www.litebit.eu/en/sell', allow_redirects=True).content
+        scraper = cfscrape.create_scraper()
+        return scraper.get('https://www.litebit.eu/en/sell', allow_redirects=True).content
