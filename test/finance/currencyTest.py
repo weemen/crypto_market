@@ -40,4 +40,4 @@ class TestCurrency(unittest.TestCase):
         myCurrency.addTokens(3, 2.0)
         myCurrency.addTokens(15, 3.0)
 
-        self.assertEquals(myCurrency.count(), 20)
+        self.assertEqual(myCurrency.count(), 20)
