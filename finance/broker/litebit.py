@@ -15,6 +15,7 @@ class Litebit(Broker):
         super(Litebit, self).__init__(currencies)
         self.__paths = []
         self.__currencies = currencies
+        self.__scraper = cfscrape.create_scraper()
 
     def fetch_token_data(self):
         self.__currencies = list(self.load_prices(currency, self.TOKEN_MAPPING[currency.symbol]) for currency in self.__currencies if currency.symbol in self.TOKEN_MAPPING)
@@ -29,9 +30,7 @@ class Litebit(Broker):
         return currency
 
     def get_buying_page(self):
-        scraper = cfscrape.create_scraper()
-        return scraper.get('https://www.litebit.eu/en/buy', allow_redirects=True).content
+        return self.__scraper.get('https://www.litebit.eu/en/buy', allow_redirects=True).content
 
     def get_selling_page(self):
-        scraper = cfscrape.create_scraper()
-        return scraper.get('https://www.litebit.eu/en/sell', allow_redirects=True).content
+        return self.__scraper.get('https://www.litebit.eu/en/sell', allow_redirects=True).content
