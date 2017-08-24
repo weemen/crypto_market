@@ -1,6 +1,8 @@
 from curses import wrapper
 from finance.broker.litebit import Litebit
 from finance.currency import Currency
+from finance.config import Config
+from finance.exception.invalidConfigurationException import InvalidConfigurationException
 from view.color import Color
 
 import curses
@@ -16,27 +18,6 @@ def quit_program(message = ''):
         print message
 
     sys.exit()
-
-
-def fetch_currency_data():
-    liteBit = Litebit(load_currencies())
-    liteBit.fetch_token_data()
-    return liteBit.tokens()
-
-
-def load_currencies():
-    config = json.loads(open('config/config.json').read())
-    currencies = []
-    for token in config['inventory']:
-        currency = Currency(token)
-        for inventory in config['inventory'][token]['inventory']:
-            try:
-                currency.addTokens(int(inventory['amount']), float(inventory['buyValue']))
-            except ValueError:
-                quit_program(("there seems to be a problem with your configuration: double check value at token: %s" % token))
-        currencies += [currency]
-    return currencies
-
 
 def print_market(myscreen, tokens):
     header = "|  %s    \t%s\t\t%s\t\t%s\t\t%s %s\t|" % ('Item'.ljust(10), 'Buy'.rjust(13), 'Sell'.rjust(13), 'Avg Buy Value'.rjust(13), 'Balance'.rjust(11), 'Unit bal'.rjust(12))
@@ -71,6 +52,14 @@ def should_refresh_window(latest_refresh_time):
 
 
 def main(myscreen):
+    config = Config('config/config.json')
+    try:
+        config.load()
+    except InvalidConfigurationException:
+        quit_program(InvalidConfigurationException.message)
+
+    liteBit = Litebit(config.currencies)
+
     # Make myscreen.getch non=blocking
     myscreen.nodelay(True)
     myscreen.clear()
@@ -79,26 +68,21 @@ def main(myscreen):
 
     #set default non curses variables
     main_screens = {0: print_market}
-
-    tokens = fetch_currency_data()
-    latest_refresh_time = dt.datetime.now()
-    main_screens[0](myscreen, tokens)
+    latest_refresh_time = None
 
     while True:
-        if should_refresh_window(latest_refresh_time):
+        if latest_refresh_time is None or should_refresh_window(latest_refresh_time):
             latest_refresh_time = dt.datetime.now()
-            tokens = fetch_currency_data()
             myscreen.clear()
-            main_screens[0](myscreen, tokens)
+            liteBit.fetch_token_data()
+            main_screens[0](myscreen, liteBit.tokens())
 
         pressedCharacter = myscreen.getch()
-        # Clear out anything else the user has typed in
 
         # If the user presses p, increase the width of the springy bar
         if pressedCharacter == ord('q'):
             quit_program()
 
-        myscreen.getch()
         time.sleep(0.1)
 
 
