@@ -82,6 +82,7 @@ def main(myscreen):
 
     tokens = fetch_currency_data()
     latest_refresh_time = dt.datetime.now()
+    main_screens[0](myscreen, tokens)
 
     while True:
         if should_refresh_window(latest_refresh_time):
@@ -96,9 +97,6 @@ def main(myscreen):
         # If the user presses p, increase the width of the springy bar
         if pressedCharacter == ord('q'):
             quit_program()
-
-        if pressedCharacter == ord('\n'):
-            main_screens[0](myscreen, tokens)
 
         myscreen.getch()
         time.sleep(0.1)
