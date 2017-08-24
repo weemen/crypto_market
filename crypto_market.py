@@ -66,19 +66,6 @@ def print_market(myscreen, tokens):
     myscreen.addstr((index+6), 5, "|==========================================================================================================================|")
 
 
-def print_menuWindow(window, label, is_selected):
-    color = Color.WHITE_ON_BLACK
-    if is_selected:
-        color = Color.RED_ON_WHITE
-
-    window.bkgd(' ', Color.set_color(color))
-    window.addstr(0, 1, label, curses.color_pair(color))
-
-
-def is_selected_menu_item(tabindex, menuIndex):
-    return (tabindex == menuIndex)
-
-
 def should_refresh_window(latest_refresh_time):
     return (dt.datetime.now().minute - latest_refresh_time.minute) >= 1
 
@@ -88,21 +75,10 @@ def main(myscreen):
     myscreen.nodelay(True)
     myscreen.clear()
 
-    #creating windows and panels
-    menuMarket = curses.newwin(1, 8, 0, 5)
-    menuMarket.immedok(True)
-
-    menuCurrencies = curses.newwin(1, 17, 0, 14)
-    menuCurrencies.immedok(True)
-
     curses.flushinp()
-    myscreen.clear()
 
     #set default non curses variables
-    tabindex     = 0
-    maxTabIndex  = 1
     main_screens = {0: print_market}
-
 
     tokens = fetch_currency_data()
     latest_refresh_time = dt.datetime.now()
@@ -121,16 +97,8 @@ def main(myscreen):
         if pressedCharacter == ord('q'):
             quit_program()
 
-        if pressedCharacter == ord('\t'):
-            tabindex+=1
-            if tabindex > maxTabIndex:
-                tabindex = 0
-
         if pressedCharacter == ord('\n'):
             main_screens[0](myscreen, tokens)
-
-        print_menuWindow(menuMarket, "Market", is_selected_menu_item(tabindex, 0))
-        print_menuWindow(menuCurrencies, "Edit Currencies", is_selected_menu_item(tabindex, 1))
 
         myscreen.getch()
         time.sleep(0.1)
