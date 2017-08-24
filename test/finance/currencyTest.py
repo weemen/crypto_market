@@ -30,7 +30,7 @@ class TestCurrency(unittest.TestCase):
         myCurrency.buyValue = 0
         myCurrency.sellValue = 0
 
-        self.assertEquals(myCurrency.count(), 0)
+        self.assertEqual(myCurrency.count(), 0)
 
     def test_it_counts_20_tokens_when_20_tokens_are_set(self):
         myCurrency = Currency("BTC")
