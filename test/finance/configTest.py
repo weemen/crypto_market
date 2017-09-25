@@ -13,17 +13,8 @@ class TestConfig(unittest.TestCase):
         config = Config('test/resources/config.json')
         config.load()
 
-        currency_xrp = Currency('XRP')
-        currency_xrp.addTokens(250, 55.42)
-        currency_xvg = Currency('XVG')
-        currency_xvg.addTokens(10000, 42.99)
-        currency_xvg.addTokens(25000, 101.25)
-
-        self.assertEqual(currency_xrp.symbol, config.currencies[0].symbol)
-        self.assertEqual(currency_xrp.average(), config.currencies[0].average())
-        self.assertEqual(currency_xvg.symbol, config.currencies[1].symbol)
-        self.assertEqual(currency_xvg.average(), config.currencies[1].average())
-
+        self.assertTrue(any(listedCurrency.symbol == "XRP" for listedCurrency in config.currencies))
+        self.assertTrue(any(listedCurrency.symbol == "XVG" for listedCurrency in config.currencies))
 
     def test_it_can_throw_invalid_configuration_exception(self):
         config = Config('test/resources/config_invalid.json')
